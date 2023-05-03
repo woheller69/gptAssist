@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
@@ -38,6 +39,7 @@ public class MainActivity extends Activity {
     private CookieManager chatCookieManager = null;
     private final Context context = this;
     private String TAG ="huggingChat";
+    private String urlToLoad = "https://huggingface.co/chat/";
 
     private static final ArrayList<String> allowedDomains = new ArrayList<String>();
 
@@ -61,8 +63,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String urlToLoad = "https://huggingface.co/chat/";
-
         //Create the WebView
         chatWebView = findViewById(R.id.chatWebView);
 
@@ -70,9 +70,6 @@ public class MainActivity extends Activity {
         chatCookieManager = CookieManager.getInstance();
         chatCookieManager.setAcceptCookie(true);
         chatCookieManager.setAcceptThirdPartyCookies(chatWebView, false);
-
-        //Delete anything from previous sessions
-        resetChat(false);
 
         //Restrict what gets loaded
         initURLs();
@@ -153,7 +150,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        resetChat(true);
     }
 
     @Override
@@ -173,13 +169,8 @@ public class MainActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-    private void resetChat(boolean exit) {
-        if (exit) {
-            chatWebView.loadUrl("about:blank");
-            chatWebView.removeAllViews();
-            chatWebSettings.setJavaScriptEnabled(false);
-        }
-        //mapsWebView.clearCache(true);
+    public void resetChat(View view)  {
+
         chatWebView.clearFormData();
         chatWebView.clearHistory();
         chatWebView.clearMatches();
@@ -189,11 +180,9 @@ public class MainActivity extends Activity {
         CookieManager.getInstance().removeAllCookies(null);
         CookieManager.getInstance().flush();
         WebStorage.getInstance().deleteAllData();
-        if (exit) {
-            chatWebView.destroyDrawingCache();
-            chatWebView.destroy();
-            chatWebView = null;
-        }
+        chatWebView.loadUrl(urlToLoad);
+
+
     }
 
 
