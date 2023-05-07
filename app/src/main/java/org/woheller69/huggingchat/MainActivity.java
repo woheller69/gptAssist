@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -73,6 +74,8 @@ public class MainActivity extends Activity {
 
         //Restrict what gets loaded
         initURLs();
+
+        chatWebView.setWebChromeClient(new WebChromeClient(){  });  //needed to share link
 
         chatWebView.setWebViewClient(new WebViewClient() {
             //Keep these in sync!
