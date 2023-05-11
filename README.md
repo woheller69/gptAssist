@@ -1,9 +1,9 @@
 <pre>Send a coffee to woheller69@t-online.de 
 <a href= "https://www.paypal.com/signin"><img  align="left" src="https://www.paypalobjects.com/webstatic/de_DE/i/de-pp-logo-150px.png"></a></pre>
 
-# huggingWrap
+# gptAssist
 
-huggingWrap is a simple WebView wrapper for huggingChat
+gptAssist is a simple WebView wrapper for ChatGPT
 
 ## License
 
@@ -11,7 +11,6 @@ This app is licensed under the GPLv3.
 
 The app uses:
 - Parts from GMaps WV (https://gitlab.com/divested-mobile/maps) which is licensed under the GPLv3
-- Icon from Google Noto Emoji (https://github.com/googlefonts/noto-emoji) which is published under Apache License 2.0
 
 ## Contributing
 

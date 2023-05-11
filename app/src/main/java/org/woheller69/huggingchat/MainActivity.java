@@ -39,8 +39,8 @@ public class MainActivity extends Activity {
     private WebSettings chatWebSettings = null;
     private CookieManager chatCookieManager = null;
     private final Context context = this;
-    private String TAG ="huggingChat";
-    private String urlToLoad = "https://huggingface.co/chat/";
+    private String TAG ="gptAssist";
+    private String urlToLoad = "https://chat.openai.com/";
 
     private static final ArrayList<String> allowedDomains = new ArrayList<String>();
 
@@ -90,7 +90,7 @@ public class MainActivity extends Activity {
                 }
                 boolean allowed = false;
                 for (String url : allowedDomains) {
-                    if (request.getUrl().getHost().equals(url)) {
+                    if (request.getUrl().getHost().endsWith(url)) {
                         allowed = true;
                     }
                 }
@@ -117,7 +117,7 @@ public class MainActivity extends Activity {
                 }
                 boolean allowed = false;
                 for (String url : allowedDomains) {
-                    if (request.getUrl().getHost().equals(url)) {
+                    if (request.getUrl().getHost().endsWith(url)) {
                         allowed = true;
                     }
                 }
@@ -191,6 +191,8 @@ public class MainActivity extends Activity {
 
     private static void initURLs() {
         //Allowed Domains
-        allowedDomains.add("huggingface.co");
+        allowedDomains.add("cdn.auth0.com");
+        allowedDomains.add("openai.com");
+
     }
 }
