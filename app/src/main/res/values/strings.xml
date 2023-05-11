@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">gptAssist</string>
+    <string name="error_microsoft_google">Login via Google or Microsoft account is not supported</string>
 </resources>

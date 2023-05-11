@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
@@ -31,6 +30,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
@@ -96,6 +97,10 @@ public class MainActivity extends Activity {
                 }
                 if (!allowed) {
                     Log.d(TAG, "[shouldInterceptRequest][NOT ON ALLOWLIST] Blocked access to " + request.getUrl().getHost());
+                    if (request.getUrl().getHost().equals("login.microsoftonline.com") || request.getUrl().getHost().equals("accounts.google.com")){
+                        Toast.makeText(context, context.getString(R.string.error_microsoft_google), Toast.LENGTH_LONG).show();
+                        resetChat();
+                    }
                     return new WebResourceResponse("text/javascript", "UTF-8", null); //Deny URLs not on ALLOWLIST
                 }
                 return null;
@@ -123,6 +128,10 @@ public class MainActivity extends Activity {
                 }
                 if (!allowed) {
                     Log.d(TAG, "[shouldOverrideUrlLoading][NOT ON ALLOWLIST] Blocked access to " + request.getUrl().getHost());
+                    if (request.getUrl().getHost().equals("login.microsoftonline.com") || request.getUrl().getHost().equals("accounts.google.com")){
+                        Toast.makeText(context, context.getString(R.string.error_microsoft_google), Toast.LENGTH_LONG).show();
+                        resetChat();
+                    }
                     return true; //Deny URLs not on ALLOWLIST
                 }
                 return false;
@@ -172,7 +181,7 @@ public class MainActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-    public void resetChat(View view)  {
+    public void resetChat()  {
 
         chatWebView.clearFormData();
         chatWebView.clearHistory();
