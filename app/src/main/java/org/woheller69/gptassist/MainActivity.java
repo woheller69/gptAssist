@@ -11,7 +11,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-package org.woheller69.huggingchat;
+package org.woheller69.gptassist;
 
 import android.app.Activity;
 import android.content.Context;
@@ -152,11 +152,10 @@ public class MainActivity extends Activity {
         chatWebSettings.setDisplayZoomControls(false);
         chatWebSettings.setDomStorageEnabled(true);
         chatWebSettings.setSaveFormData(false);
-        //Change the User-Agent
-        chatWebSettings.setUserAgentString("Mozilla/5.0 (Linux; Android 12; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.79 Mobile Safari/537.36");
 
         //Load Google Maps
         chatWebView.loadUrl(urlToLoad);
+        if (GithubStar.shouldShowStarDialog(this)) GithubStar.starDialog(this,"https://github.com/woheller69/gptassist");
     }
 
     @Override
