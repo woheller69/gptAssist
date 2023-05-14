@@ -3,7 +3,8 @@
 
 # gptAssist
 
-gptAssist is a simple WebView wrapper for ChatGPT
+gptAssist is a simple WebView wrapper for ChatGPT. It blocks all URLs which are not essential.
+It does not support login via Microsoft or Google account.
 
 ## License
 
