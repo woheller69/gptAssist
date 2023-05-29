@@ -151,7 +151,7 @@ public class MainActivity extends Activity {
         chatWebSettings.setDatabaseEnabled(false);
         chatWebSettings.setDisplayZoomControls(false);
         chatWebSettings.setDomStorageEnabled(true);
-        chatWebSettings.setSaveFormData(false);
+        chatWebSettings.setSaveFormData(true);
 
         //Load Google Maps
         chatWebView.loadUrl(urlToLoad);
