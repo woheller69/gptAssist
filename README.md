@@ -4,7 +4,7 @@
 # gptAssist
 
 gptAssist is a simple WebView wrapper for ChatGPT. It blocks all URLs which are not essential.
-It does not support login via Microsoft or Google account.
+It does not support login via Apple, Microsoft or Google account.
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
 alt="Get it on F-Droid"

@@ -15,7 +15,6 @@ package org.woheller69.gptassist;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -97,7 +96,7 @@ public class MainActivity extends Activity {
                 }
                 if (!allowed) {
                     Log.d(TAG, "[shouldInterceptRequest][NOT ON ALLOWLIST] Blocked access to " + request.getUrl().getHost());
-                    if (request.getUrl().getHost().equals("login.microsoftonline.com") || request.getUrl().getHost().equals("accounts.google.com")){
+                    if (request.getUrl().getHost().equals("login.microsoftonline.com") || request.getUrl().getHost().equals("accounts.google.com") || request.getUrl().getHost().equals("appleid.apple.com")){
                         Toast.makeText(context, context.getString(R.string.error_microsoft_google), Toast.LENGTH_LONG).show();
                         resetChat();
                     }
@@ -123,7 +122,7 @@ public class MainActivity extends Activity {
                 }
                 if (!allowed) {
                     Log.d(TAG, "[shouldOverrideUrlLoading][NOT ON ALLOWLIST] Blocked access to " + request.getUrl().getHost());
-                    if (request.getUrl().getHost().equals("login.microsoftonline.com") || request.getUrl().getHost().equals("accounts.google.com")){
+                    if (request.getUrl().getHost().equals("login.microsoftonline.com") || request.getUrl().getHost().equals("accounts.google.com") || request.getUrl().getHost().equals("appleid.apple.com")){
                         Toast.makeText(context, context.getString(R.string.error_microsoft_google), Toast.LENGTH_LONG).show();
                         resetChat();
                     }
@@ -138,17 +137,17 @@ public class MainActivity extends Activity {
         //Enable some WebView features
         chatWebSettings.setJavaScriptEnabled(true);
         chatWebSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        chatWebSettings.setGeolocationEnabled(false);
+        chatWebSettings.setDomStorageEnabled(true);
         //Disable some WebView features
         chatWebSettings.setAllowContentAccess(false);
         chatWebSettings.setAllowFileAccess(false);
         chatWebSettings.setBuiltInZoomControls(false);
         chatWebSettings.setDatabaseEnabled(false);
         chatWebSettings.setDisplayZoomControls(false);
-        chatWebSettings.setDomStorageEnabled(true);
         chatWebSettings.setSaveFormData(false);
+        chatWebSettings.setGeolocationEnabled(false);
 
-        //Load Google Maps
+        //Load ChatGPT
         chatWebView.loadUrl(urlToLoad);
         if (GithubStar.shouldShowStarDialog(this)) GithubStar.starDialog(this,"https://github.com/woheller69/gptassist");
     }
@@ -190,7 +189,6 @@ public class MainActivity extends Activity {
 
 
     }
-
 
     private static void initURLs() {
         //Allowed Domains
