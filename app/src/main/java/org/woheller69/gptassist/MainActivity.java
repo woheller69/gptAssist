@@ -111,11 +111,6 @@ public class MainActivity extends Activity {
                 if (request.getUrl().toString().equals("about:blank")) {
                     return false;
                 }
-                if (request.getUrl().toString().startsWith("tel:")) {
-                    Intent dial = new Intent(Intent.ACTION_DIAL, request.getUrl());
-                    startActivity(dial);
-                    return true;
-                }
                 if (!request.getUrl().toString().startsWith("https://")) {
                     Log.d(TAG, "[shouldOverrideUrlLoading][NON-HTTPS] Blocked access to " + request.getUrl().toString());
                     return true; //Deny URLs that aren't HTTPS
