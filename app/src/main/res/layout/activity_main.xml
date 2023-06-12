@@ -4,9 +4,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/WebProxy"
+            android:gravity="left"
+            android:singleLine="true"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Enter proxy:port"/>
+
+        <EditText
+            android:id="@+id/ProxyUser"
+            android:gravity="left"
+            android:singleLine="true"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="user"/>
+
+        <EditText
+            android:id="@+id/ProxyPass"
+            android:gravity="left"
+            android:singleLine="true"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="pass"/>
+
+        <Button
+            android:id="@+id/ButtonSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:onClick="saveProxy" />
+
+    </LinearLayout>
+
     <WebView
         android:id="@+id/chatWebView"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp" />
 
 </LinearLayout>

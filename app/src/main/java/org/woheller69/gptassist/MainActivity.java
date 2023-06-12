@@ -15,13 +15,16 @@ package org.woheller69.gptassist;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
+import android.webkit.HttpAuthHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -29,7 +32,14 @@ import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import android.preference.PreferenceManager;
+import androidx.webkit.ProxyConfig;
+import androidx.webkit.ProxyController;
+import androidx.webkit.WebViewFeature;
 
 import java.util.ArrayList;
 
@@ -38,6 +48,10 @@ public class MainActivity extends Activity {
     private WebView chatWebView = null;
     private WebSettings chatWebSettings = null;
     private CookieManager chatCookieManager = null;
+    private EditText editProxy;
+    private EditText editUser;
+    private EditText editPass;
+    private Button buttonSave;
     private final Context context = this;
     private String TAG ="gptAssist";
     private String urlToLoad = "https://chat.openai.com/";
@@ -46,6 +60,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onPause() {
+        if (chatCookieManager!=null) chatCookieManager.flush();
         super.onPause();
     }
 
@@ -66,6 +81,23 @@ public class MainActivity extends Activity {
 
         //Create the WebView
         chatWebView = findViewById(R.id.chatWebView);
+        editProxy = findViewById(R.id.WebProxy);
+        editUser = findViewById(R.id.ProxyUser);
+        editPass = findViewById(R.id.ProxyPass);
+        buttonSave = findViewById(R.id.ButtonSave);
+
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)){
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+            editProxy.setText(sp.getString("WebProxy",""));
+            editUser.setText(sp.getString("ProxyUser",""));
+            editPass.setText(sp.getString("ProxyPass","").equals("") ? "" : "*****");
+            setProxy(editProxy.getText().toString());
+        } else {
+            buttonSave.setVisibility(View.GONE);
+            editProxy.setVisibility(View.GONE);
+            editUser.setVisibility(View.GONE);
+            editPass.setVisibility(View.GONE);
+        }
 
         //Set cookie options
         chatCookieManager = CookieManager.getInstance();
@@ -78,6 +110,11 @@ public class MainActivity extends Activity {
         chatWebView.setWebChromeClient(new WebChromeClient(){  });  //needed to share link
 
         chatWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                handler.proceed(sp.getString("ProxyUser",""), sp.getString("ProxyPass",""));
+            }
             //Keep these in sync!
             @Override
             public WebResourceResponse shouldInterceptRequest(final WebView view, WebResourceRequest request) {
@@ -175,7 +212,6 @@ public class MainActivity extends Activity {
     }
 
     public void resetChat()  {
-
         chatWebView.clearFormData();
         chatWebView.clearHistory();
         chatWebView.clearMatches();
@@ -186,8 +222,6 @@ public class MainActivity extends Activity {
         CookieManager.getInstance().flush();
         WebStorage.getInstance().deleteAllData();
         chatWebView.loadUrl(urlToLoad);
-
-
     }
 
     private static void initURLs() {
@@ -195,5 +229,30 @@ public class MainActivity extends Activity {
         allowedDomains.add("cdn.auth0.com");
         allowedDomains.add("openai.com");
 
+    }
+
+    private void setProxy(String proxy) {
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)){
+            if (proxy.isEmpty()){
+                ProxyController.getInstance().clearProxyOverride(command -> {}, () -> {});
+            }  else {
+                ProxyConfig proxyConfig = new ProxyConfig.Builder()
+                        .addProxyRule(proxy)
+                        .build();
+                ProxyController.getInstance().setProxyOverride(proxyConfig, command -> {}, () -> {});
+            }
+        }
+    }
+
+    public void saveProxy(View v) {
+        setProxy(editProxy.getText().toString());
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("WebProxy", editProxy.getText().toString());
+        editor.putString("ProxyUser", editUser.getText().toString());
+        if (!editPass.getText().toString().equals("*****")) editor.putString("ProxyPass", editPass.getText().toString());
+        editor.apply();
+        editPass.setText(sp.getString("ProxyPass","").equals("") ? "" : "*****");
+        chatWebView.loadUrl(urlToLoad);
     }
 }
