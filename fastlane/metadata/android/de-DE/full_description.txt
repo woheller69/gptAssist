@@ -1,2 +1,3 @@
 gptAssist ist ein WebView-Wrapper für ChatGPT. Die App blockiert alle URLs, die für die Funktion nicht essentiell sind.
 Login via Microsoft oder Google Konto werden nicht unterstützt.
+Bitte nutzen Sie für die Erstregistrierung einen Webbrowser.
