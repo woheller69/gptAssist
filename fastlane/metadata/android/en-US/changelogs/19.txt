@@ -1,0 +1,1 @@
+Add domain cdn.oaistatic.com to make app work again

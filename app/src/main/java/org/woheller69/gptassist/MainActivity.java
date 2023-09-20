@@ -206,6 +206,6 @@ public class MainActivity extends Activity {
         allowedDomains.add("cdn.auth0.com");
         allowedDomains.add("openai.com");
         allowedDomains.add("fileserviceuploadsperm.blob.core.windows.net");
-
+        allowedDomains.add("cdn.oaistatic.com");
     }
 }
