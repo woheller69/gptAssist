@@ -15,12 +15,14 @@ package org.woheller69.gptassist;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.ClientCertRequest;
 import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
@@ -31,6 +33,8 @@ import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import android.webkit.ValueCallback;
+import android.net.Uri;
 
 import java.util.ArrayList;
 
@@ -44,6 +48,9 @@ public class MainActivity extends Activity {
     private String urlToLoad = "https://chat.openai.com/";
 
     private static final ArrayList<String> allowedDomains = new ArrayList<String>();
+
+    private ValueCallback<Uri[]> mUploadMessage;
+    private final static int FILE_CHOOSER_REQUEST_CODE = 1;
 
     @Override
     protected void onPause() {
@@ -85,6 +92,22 @@ public class MainActivity extends Activity {
                     return true;
                 }
                 return false;
+            }
+
+            @Override
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                if (mUploadMessage != null) {
+                    mUploadMessage.onReceiveValue(null);
+                    mUploadMessage = null;
+                }
+
+                mUploadMessage = filePathCallback;
+
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                startActivityForResult(intent, FILE_CHOOSER_REQUEST_CODE);
+                return true;
             }
         });  //needed to share link
 
@@ -208,4 +231,24 @@ public class MainActivity extends Activity {
         allowedDomains.add("fileserviceuploadsperm.blob.core.windows.net");
         allowedDomains.add("cdn.oaistatic.com");
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == FILE_CHOOSER_REQUEST_CODE) {
+            if (mUploadMessage == null) return;
+            Uri[] result = null;
+            if (resultCode == Activity.RESULT_OK) {
+                if (intent != null) {
+                    String dataString = intent.getDataString();
+                    if (dataString != null) {
+                        result = new Uri[]{Uri.parse(dataString)};
+                    }
+                }
+            }
+            mUploadMessage.onReceiveValue(result);
+            mUploadMessage = null;
+        }
+    }
+
 }

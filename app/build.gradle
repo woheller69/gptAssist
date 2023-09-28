@@ -9,8 +9,8 @@ android {
         applicationId "org.woheller69.gptassist"
         minSdk 21
         targetSdk 33
-        versionCode 19
-        versionName "1.9"
+        versionCode 110
+        versionName "1.10"
     }
 
     buildTypes {
