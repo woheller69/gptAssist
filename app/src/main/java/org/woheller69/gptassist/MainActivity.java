@@ -237,6 +237,10 @@ public class MainActivity extends Activity {
         allowedDomains.add("openai.com");
         allowedDomains.add("fileserviceuploadsperm.blob.core.windows.net");
         allowedDomains.add("cdn.oaistatic.com");
+        allowedDomains.add("oaiusercontent.com");
+
+
+        
     }
 
     @Override
