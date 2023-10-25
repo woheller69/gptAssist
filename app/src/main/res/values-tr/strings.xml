@@ -7,4 +7,5 @@
     <string name="dialog_NO_button">Hayır</string>
     <string name="dialog_Later_button">Belki sonra</string>
     <string name="dialog_StarOnGitHub">Bu uygulamayı beğendiniz mi? Lütfen GitHub\'da bir yıldız verin veya geliştiriciye PayPal ile bir kahve ısmarlayın.</string>
+    <string name="download">İndirme başladı:</string>
 </resources>

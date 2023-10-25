@@ -13,20 +13,25 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package org.woheller69.gptassist;
 
+import static android.webkit.WebView.HitTestResult.IMAGE_TYPE;
 import android.Manifest;
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.ClientCertRequest;
 import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
+import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -77,6 +82,7 @@ public class MainActivity extends Activity {
 
         //Create the WebView
         chatWebView = findViewById(R.id.chatWebView);
+        registerForContextMenu(chatWebView);
 
         //Set cookie options
         chatCookieManager = CookieManager.getInstance();
@@ -239,8 +245,6 @@ public class MainActivity extends Activity {
         allowedDomains.add("cdn.oaistatic.com");
         allowedDomains.add("oaiusercontent.com");
 
-
-        
     }
 
     @Override
@@ -262,4 +266,27 @@ public class MainActivity extends Activity {
         }
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
+        super.onCreateContextMenu(menu, v, menuInfo);
+        WebView.HitTestResult result = chatWebView.getHitTestResult();
+        if (result.getExtra() != null) {
+            if (result.getType() == IMAGE_TYPE) {
+                String url = result.getExtra();
+                Uri source = Uri.parse(url);
+                DownloadManager.Request request = new DownloadManager.Request(source);
+                request.addRequestHeader("Cookie", CookieManager.getInstance().getCookie(url));
+                request.addRequestHeader("Accept", "text/html, application/xhtml+xml, *" + "/" + "*");
+                request.addRequestHeader("Accept-Language", "en-US,en;q=0.7,he;q=0.3");
+                request.addRequestHeader("Referer", url);
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); //Notify client once download is completed!
+                String filename = URLUtil.guessFileName(url, null, null);
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
+                Toast.makeText(this,getString(R.string.download)+"\n"+filename, Toast.LENGTH_SHORT).show();
+                DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                assert dm != null;
+                dm.enqueue(request);
+            }
+        }
+    }
 }
