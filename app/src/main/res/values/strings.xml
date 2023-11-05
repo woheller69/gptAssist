@@ -8,4 +8,6 @@
     <string name="dialog_Later_button">Maybe later</string>
     <string name="dialog_StarOnGitHub">Do you like this app? Please give a star on GitHub or buy the developer a coffee via PayPal.</string>
     <string name="download">Download started:</string>
+    <string name="all_urls">All URLs allowed</string>
+    <string name="urls_restricted">URLs restricted</string>
 </resources>

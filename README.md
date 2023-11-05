@@ -20,6 +20,9 @@ gptAssist is a simple WebView wrapper for ChatGPT. It blocks all URLs which are 
 It does not support login via Apple, Microsoft or Google account.
 Please use a web browser for initial sign up.
 
+You can switch on/off blocking by clicking the button at the top right.
+Swipe up a bit to hide the button.
+
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
 alt="Get it on F-Droid"
 height="80">](https://f-droid.org/packages/org.woheller69.gptassist/)

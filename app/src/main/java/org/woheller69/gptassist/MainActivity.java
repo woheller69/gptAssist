@@ -20,6 +20,7 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -39,20 +40,26 @@ import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import android.webkit.ValueCallback;
 import android.net.Uri;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
     private WebView chatWebView = null;
+    private ImageButton restrictedButton = null;
     private WebSettings chatWebSettings = null;
     private CookieManager chatCookieManager = null;
     private final Context context = this;
+    private SwipeTouchListener swipeTouchListener;
     private String TAG ="gptAssist";
     private String urlToLoad = "https://chat.openai.com/";
+    private static boolean restricted = true;
 
     private static final ArrayList<String> allowedDomains = new ArrayList<String>();
 
@@ -62,16 +69,47 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         if (chatCookieManager!=null) chatCookieManager.flush();
+        swipeTouchListener = null;
         super.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (restricted) restrictedButton.setImageDrawable(getDrawable(R.drawable.restricted));
+        else restrictedButton.setImageDrawable(getDrawable(R.drawable.unrestricted));
+
+        restrictedButton.setOnClickListener(v -> {
+            restricted = !restricted;
+            if (restricted) {
+                restrictedButton.setImageDrawable(getDrawable(R.drawable.restricted));
+                Toast.makeText(context,R.string.urls_restricted,Toast.LENGTH_SHORT).show();
+            }
+            else {
+                restrictedButton.setImageDrawable(getDrawable(R.drawable.unrestricted));
+                Toast.makeText(context,R.string.all_urls,Toast.LENGTH_SHORT).show();
+            }
+            chatWebView.reload();
+        });
+
+        swipeTouchListener = new SwipeTouchListener(context) {
+            public void onSwipeBottom() {
+                if (!chatWebView.canScrollVertically(0)) {
+                    restrictedButton.setVisibility(View.VISIBLE);
+                }
+            }
+            public void onSwipeTop(){
+                    restrictedButton.setVisibility(View.GONE);
+            }
+        };
+
+        chatWebView.setOnTouchListener(swipeTouchListener);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        restricted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             setTheme(android.R.style.Theme_DeviceDefault_DayNight);
         }
@@ -83,6 +121,7 @@ public class MainActivity extends Activity {
         //Create the WebView
         chatWebView = findViewById(R.id.chatWebView);
         registerForContextMenu(chatWebView);
+        restrictedButton = findViewById(R.id.restricted);
 
         //Set cookie options
         chatCookieManager = CookieManager.getInstance();
@@ -128,6 +167,8 @@ public class MainActivity extends Activity {
             //Keep these in sync!
             @Override
             public WebResourceResponse shouldInterceptRequest(final WebView view, WebResourceRequest request) {
+                if (!restricted) return null;
+
                 if (request.getUrl().toString().equals("about:blank")) {
                     return null;
                 }
@@ -147,6 +188,15 @@ public class MainActivity extends Activity {
                         Toast.makeText(context, context.getString(R.string.error_microsoft_google), Toast.LENGTH_LONG).show();
                         resetChat();
                     }
+                    if (request.getUrl().toString().contains("gravatar.com/avatar/")) {
+                        AssetManager assetManager = getAssets();
+                        try {
+                            InputStream inputStream = assetManager.open("avatar.png");
+                            return new WebResourceResponse("image/png","UTF-8",inputStream);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                     return new WebResourceResponse("text/javascript", "UTF-8", null); //Deny URLs not on ALLOWLIST
                 }
                 return null;
@@ -154,6 +204,8 @@ public class MainActivity extends Activity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                if (!restricted) return false;
+
                 if (request.getUrl().toString().equals("about:blank")) {
                     return false;
                 }
