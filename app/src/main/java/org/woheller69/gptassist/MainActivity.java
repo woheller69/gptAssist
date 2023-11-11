@@ -85,10 +85,12 @@ public class MainActivity extends Activity {
             if (restricted) {
                 restrictedButton.setImageDrawable(getDrawable(R.drawable.restricted));
                 Toast.makeText(context,R.string.urls_restricted,Toast.LENGTH_SHORT).show();
+                chatWebSettings.setUserAgentString(WebSettings.getDefaultUserAgent(this));
             }
             else {
                 restrictedButton.setImageDrawable(getDrawable(R.drawable.unrestricted));
                 Toast.makeText(context,R.string.all_urls,Toast.LENGTH_SHORT).show();
+                chatWebSettings.setUserAgentString(modUserAgent());
             }
             chatWebView.reload();
         });
@@ -341,4 +343,19 @@ public class MainActivity extends Activity {
             }
         }
     }
+
+    public String modUserAgent(){
+
+        String newPrefix = "Mozilla/5.0 (X11; Linux "+ System.getProperty("os.arch") +")";
+
+        String newUserAgent=WebSettings.getDefaultUserAgent(context);
+        String prefix = newUserAgent.substring(0, newUserAgent.indexOf(")") + 1);
+         try {
+                newUserAgent=newUserAgent.replace(prefix,newPrefix);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+         return newUserAgent;
+    }
+
 }

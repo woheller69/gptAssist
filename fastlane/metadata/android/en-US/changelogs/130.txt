@@ -1,0 +1,3 @@
+Add hidable option to switch on/off restricted mode
+(default:on  swipe down/up on screen to show/hide)
+Show built-in avatar in restricted mode
