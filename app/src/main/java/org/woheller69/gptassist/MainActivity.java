@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
     private final Context context = this;
     private SwipeTouchListener swipeTouchListener;
     private String TAG ="gptAssist";
-    private String urlToLoad = "https://chat.openai.com/";
+    private String urlToLoad = "https://chatgpt.com/";
     private static boolean restricted = true;
 
     private static final ArrayList<String> allowedDomains = new ArrayList<String>();
@@ -294,6 +294,7 @@ public class MainActivity extends Activity {
     private static void initURLs() {
         //Allowed Domains
         allowedDomains.add("cdn.auth0.com");
+        allowedDomains.add("chatgpt.com");
         allowedDomains.add("openai.com");
         allowedDomains.add("fileserviceuploadsperm.blob.core.windows.net");
         allowedDomains.add("cdn.oaistatic.com");
