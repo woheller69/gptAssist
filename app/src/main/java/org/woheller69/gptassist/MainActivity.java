@@ -294,6 +294,7 @@ public class MainActivity extends Activity {
     private static void initURLs() {
         //Allowed Domains
         allowedDomains.add("cdn.auth0.com");
+        allowedDomains.add("auth.openai.com");
         allowedDomains.add("chatgpt.com");
         allowedDomains.add("openai.com");
         allowedDomains.add("fileserviceuploadsperm.blob.core.windows.net");
