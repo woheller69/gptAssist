@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">gptAssist</string>
+    <string name="error_microsoft_google">Google, Apple veya Microsoft hesabı üzerinden giriş desteklenmez</string>
+    <string name="error_copy">Lütfen metni manuel olarak seçin ve kopyalayın</string>
+    <!-- StarDialog -->
+    <string name="dialog_OK_button">TAMAM</string>
+    <string name="dialog_NO_button">Hayır</string>
+    <string name="dialog_Later_button">Belki sonra</string>
+    <string name="dialog_StarOnGitHub">Bu uygulamayı beğendiniz mi? Lütfen GitHub\'da bir yıldız verin veya geliştiriciye PayPal ile bir kahve ısmarlayın.</string>
+    <string name="download">İndirme başladı:</string>
+    <string name="all_urls">Tüm URL\'lere izin verildi</string>
+    <string name="urls_restricted">URL\'ler kısıtlandı</string>
+</resources>
