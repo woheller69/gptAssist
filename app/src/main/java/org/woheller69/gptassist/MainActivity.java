@@ -52,6 +52,7 @@ import android.widget.Toast;
 import android.webkit.ValueCallback;
 import android.net.Uri;
 
+import androidx.webkit.URLUtilCompat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -250,7 +251,8 @@ public class MainActivity extends Activity {
             request.addRequestHeader("Accept-Language", "en-US,en;q=0.7,he;q=0.3");
             request.addRequestHeader("Referer", url);
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); //Notify client once download is completed!
-            String filename = URLUtil.guessFileName(url, contentDisposition, mimetype);
+            String filename = URLUtilCompat.getFilenameFromContentDisposition(contentDisposition);
+            if (filename == null) filename = URLUtilCompat.guessFileName(url, contentDisposition, mimetype);  // only if getFilenameFromContentDisposition does not work and returns null
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
             Toast.makeText(this, getString(R.string.download) + "\n" + filename, Toast.LENGTH_SHORT).show();
             DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
