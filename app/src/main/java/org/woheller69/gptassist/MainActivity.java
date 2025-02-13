@@ -14,9 +14,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package org.woheller69.gptassist;
 
 import static android.webkit.WebView.HitTestResult.IMAGE_TYPE;
+import static android.webkit.WebView.HitTestResult.SRC_ANCHOR_TYPE;
+import static android.webkit.WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,6 +28,9 @@ import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -132,6 +139,7 @@ public class MainActivity extends Activity {
 
         //Restrict what gets loaded
         initURLs();
+        registerForContextMenu(chatWebView);
 
         chatWebView.setWebChromeClient(new WebChromeClient(){
             @Override
@@ -233,6 +241,23 @@ public class MainActivity extends Activity {
             }
         });
 
+        chatWebView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
+            Uri source = Uri.parse(url);
+            Log.d(TAG,"DownloadManager: " + url);
+            DownloadManager.Request request = new DownloadManager.Request(source);
+            request.addRequestHeader("Cookie", CookieManager.getInstance().getCookie(url));
+            request.addRequestHeader("Accept", "text/html, application/xhtml+xml, *" + "/" + "*");
+            request.addRequestHeader("Accept-Language", "en-US,en;q=0.7,he;q=0.3");
+            request.addRequestHeader("Referer", url);
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); //Notify client once download is completed!
+            String filename = URLUtil.guessFileName(url, contentDisposition, mimetype);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
+            Toast.makeText(this, getString(R.string.download) + "\n" + filename, Toast.LENGTH_SHORT).show();
+            DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            assert dm != null;
+            dm.enqueue(request);
+        });
+
         //Set more options
         chatWebSettings = chatWebView.getSettings();
         //Enable some WebView features
@@ -323,12 +348,13 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         WebView.HitTestResult result = chatWebView.getHitTestResult();
+        String url = "";
         if (result.getExtra() != null) {
             if (result.getType() == IMAGE_TYPE) {
-                String url = result.getExtra();
+                url = result.getExtra();
                 Uri source = Uri.parse(url);
                 DownloadManager.Request request = new DownloadManager.Request(source);
                 request.addRequestHeader("Cookie", CookieManager.getInstance().getCookie(url));
@@ -338,10 +364,41 @@ public class MainActivity extends Activity {
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); //Notify client once download is completed!
                 String filename = URLUtil.guessFileName(url, null, "image/jpeg");
                 request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
-                Toast.makeText(this,getString(R.string.download)+"\n"+filename, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.download) + "\n" + filename, Toast.LENGTH_SHORT).show();
                 DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
                 assert dm != null;
                 dm.enqueue(request);
+            } else if (result.getType() == SRC_IMAGE_ANCHOR_TYPE || result.getType() == SRC_ANCHOR_TYPE) {
+                if (result.getType() == SRC_IMAGE_ANCHOR_TYPE) {
+                    // Create a background thread that has a Looper
+                    HandlerThread handlerThread = new HandlerThread("HandlerThread");
+                    handlerThread.start();
+                    // Create a handler to execute tasks in the background thread.
+                    Handler backgroundHandler = new Handler(handlerThread.getLooper());
+                    Message msg = backgroundHandler.obtainMessage();
+                    chatWebView.requestFocusNodeHref(msg);
+                    url = (String) msg.getData().get("url");
+                    Toast.makeText(this, "SRC_IMAGE: " + url, Toast.LENGTH_SHORT).show();
+                } else if (result.getType() == SRC_ANCHOR_TYPE) {
+                    url = result.getExtra();
+                    Toast.makeText(this, "SRC_ANCHOR: " + url, Toast.LENGTH_SHORT).show();
+                }
+                String host = Uri.parse(url).getHost();
+                if (host != null) {
+                    boolean allowed = false;
+                    for (String domain : allowedDomains) {
+                        if (host.endsWith(domain)) {
+                            allowed = true;
+                            break;
+                        }
+                    }
+                    if (!allowed) {  //Copy URLs that are not allowed to open to clipboard
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText(getString(R.string.app_name), url);
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(this, getString(R.string.url_copied), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         }
     }
