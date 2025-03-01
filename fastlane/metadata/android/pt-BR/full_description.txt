@@ -1,0 +1,6 @@
+O gptAssist é um embrulho WebView do ChatGPT. Ele bloqueia todas as URLs que não são essenciais para o funcionamento.
+Ele não suporta login por contas da Apple, Microsoft ou Google.
+Por favor use um navegador web para o registro inicial.
+
+Você pode ativar ou desativar o bloqueamento tocando no botão na parte superior direita.
+Deslize um pouco para cima para esconder o botão.
