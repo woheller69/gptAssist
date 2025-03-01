@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">gptAssist</string>
+    <string name="app_name" translatable="false">gptAssist</string>
     <string name="error_microsoft_google">Login via Google, Apple, or Microsoft account is not supported</string>
     <string name="error_copy">Please select and copy text manually</string>
     <!-- StarDialog -->
