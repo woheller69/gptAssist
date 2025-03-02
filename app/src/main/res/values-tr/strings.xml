@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">gptAssist</string>
     <string name="error_microsoft_google">Google, Apple veya Microsoft hesabı üzerinden giriş desteklenmez</string>
     <string name="error_copy">Lütfen metni manuel olarak seçin ve kopyalayın</string>
     <!-- StarDialog -->
@@ -10,5 +9,4 @@
     <string name="download">İndirme başladı:</string>
     <string name="all_urls">Tüm URL\'lere izin verildi</string>
     <string name="urls_restricted">URL\'ler kısıtlandı</string>
-    <string name="url_copied">URL copied</string>
 </resources>
