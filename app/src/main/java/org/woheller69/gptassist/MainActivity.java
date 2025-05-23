@@ -98,7 +98,7 @@ public class MainActivity extends Activity {
             else {
                 restrictedButton.setImageDrawable(getDrawable(R.drawable.unrestricted));
                 Toast.makeText(context,R.string.all_urls,Toast.LENGTH_SHORT).show();
-                chatWebSettings.setUserAgentString(WebSettings.getDefaultUserAgent(this));
+                chatWebSettings.setUserAgentString(modUserAgent()); //Needed for login via Google
             }
             chatWebView.reload();
         });
