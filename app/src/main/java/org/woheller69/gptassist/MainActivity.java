@@ -172,6 +172,26 @@ public class MainActivity extends Activity {
                 startActivityForResult(intent, FILE_CHOOSER_REQUEST_CODE);
                 return true;
             }
+
+            @Override
+            public void onPermissionRequest(final android.webkit.PermissionRequest request) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (request.getResources().length > 0 && request.getResources()[0].equals(android.webkit.PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
+                        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                            request.grant(request.getResources());
+                        } else {
+                            // Request the permission from the user
+                            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 123);
+                            // A more robust solution would involve storing 'request' and calling request.grant() in onRequestPermissionsResult.
+                        }
+                    } else {
+                        request.deny();
+                    }
+                } else {
+                    request.grant(request.getResources()); // For older Android versions, permissions are granted at install time
+                }
+            }
+
         });  //needed to share link
 
         chatWebView.setWebViewClient(new WebViewClient() {
@@ -417,6 +437,27 @@ public class MainActivity extends Activity {
                 e.printStackTrace();
             }
          return newUserAgent;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 123) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(context, "Microphone permission granted.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Microphone permission denied.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        // Handle other permission requests if any (like FILE_CHOOSER_REQUEST_CODE)
+        if (requestCode == 100) { // This is the request code for READ_EXTERNAL_STORAGE from onShowFileChooser
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted for file access
+            } else {
+                Toast.makeText(context, "Storage permission denied.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 }
