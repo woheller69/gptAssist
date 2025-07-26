@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name" translatable="false">gptAssist</string>
+    <string name="error_microsoft_google">不支持通过谷歌、苹果或微软账户登录</string>
+    <string name="error_copy">请手动选择并复制文本</string>
+    <!-- StarDialog -->
+    <string name="dialog_OK_button">确定</string>
+    <string name="dialog_NO_button">否</string>
+    <string name="dialog_Later_button">稍后</string>
+    <string name="dialog_StarOnGitHub">您喜欢这个应用吗？请在GitHub上给它一个星星，或者通过PayPal请开发者喝杯咖啡~</string>
+    <string name="download">下载开始：</string>
+    <string name="all_urls">所有URL都允许</string>
+    <string name="urls_restricted">URL受限</string>
+    <string name="url_copied">URL已复制</string>
+</resources>
