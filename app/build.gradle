@@ -3,14 +3,15 @@ plugins {
 }
 
 android {
-    compileSdk 34
-
+    compileSdk 35
+    namespace 'org.woheller69.gptassist'
+    android.buildFeatures.buildConfig true
     defaultConfig {
         applicationId "org.woheller69.gptassist"
         minSdk 21
-        targetSdk 34
-        versionCode 200
-        versionName "2.00"
+        targetSdk 35
+        versionCode 210
+        versionName "2.10"
     }
 
     buildTypes {
