@@ -10,11 +10,11 @@ android {
         applicationId "org.shano.assistral"
         minSdk 21
         targetSdk 35
-        versionCode 300
-        versionName project.findProperty("VERSION_NAME") ?: "3.0"
+        versionCode 320
+        versionName project.findProperty("VERSION_NAME") ?: "3.2.0"
         
         // Set arch-specific version code
-        project.ext.versionNameString = project.findProperty("VERSION_NAME") ?: "3.0"
+        project.ext.versionNameString = project.findProperty("VERSION_NAME") ?: "3.2.0"
     }
 
     signingConfigs {

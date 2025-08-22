@@ -1,0 +1,4 @@
+• Rebranded from mistralAssistral to Assistral for trademark compliance
+• Improved app logo centering and padding  
+• Updated package name to org.shano.assistral
+• All functionality remains the same - secure WebView wrapper for Mistral Le Chat

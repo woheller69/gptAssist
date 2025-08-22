@@ -38,8 +38,14 @@ Builds:
     subdir: app
     gradle:
       - yes
+  - versionName: '3.2.0'
+    versionCode: 320
+    commit: v3.2.0
+    subdir: app
+    gradle:
+      - yes
 
 AutoUpdateMode: Version v%v
 UpdateCheckMode: Tags
-CurrentVersion: '3.0'
-CurrentVersionCode: 300
+CurrentVersion: '3.2.0'
+CurrentVersionCode: 320
