@@ -52,7 +52,13 @@ jobs:
           fi
 
       - name: Build Release APK
-        run: ./gradlew assembleRelease
+        run: |
+          echo "Signing config debug:"
+          echo "MYAPP_RELEASE_STORE_FILE exists: $(test -f $MYAPP_RELEASE_STORE_FILE && echo yes || echo no)"
+          echo "MYAPP_RELEASE_STORE_FILE: $MYAPP_RELEASE_STORE_FILE"
+          echo "VERSION_NAME: $VERSION_NAME"
+          echo "Building with signing..."
+          ./gradlew assembleRelease
         env:
           MYAPP_RELEASE_STORE_FILE: ${{ github.workspace }}/app/release.keystore
           MYAPP_RELEASE_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}

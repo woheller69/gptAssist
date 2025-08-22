@@ -48,7 +48,8 @@ android {
     // F-Droid compatibility - ensure reproducible builds
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "mistralAssistral-${variant.name}-${variant.versionName}.apk"
+            def versionName = project.findProperty("VERSION_NAME") ?: "3.0"
+            outputFileName = "mistralAssistral-${variant.name}-${versionName}.apk"
         }
     }
 }
