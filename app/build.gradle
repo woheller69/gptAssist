@@ -29,7 +29,10 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            // Only use signing config if properties are available
+            if (project.hasProperty("MYAPP_RELEASE_STORE_FILE")) {
+                signingConfig signingConfigs.release
+            }
         }
     }
     compileOptions {
