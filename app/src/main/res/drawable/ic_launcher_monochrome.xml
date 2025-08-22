@@ -4,28 +4,28 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
   
-  <!-- Monochrome chat bubble outline -->
+  <!-- Monochrome chat bubble outline with better centering -->
   <path
-      android:pathData="M20,35 Q20,25 30,25 L75,25 Q85,25 85,35 L85,55 Q85,65 75,65 L40,65 L25,75 L20,65 Q20,55 20,55 Z"
+      android:pathData="M30,44 Q30,34 40,34 L68,34 Q78,34 78,44 L78,60 Q78,70 68,70 L45,70 L35,78 L30,70 Q30,60 30,60 Z"
       android:strokeColor="#FFFFFF"
-      android:strokeWidth="3"
+      android:strokeWidth="2.5"
       android:fillColor="@android:color/transparent"/>
   
   <!-- Left eye (circle as path) -->
   <path
-      android:pathData="M40,39 A3,3 0 1,1 40,45 A3,3 0 1,1 40,39 Z"
+      android:pathData="M44,47 A2.5,2.5 0 1,1 44,52 A2.5,2.5 0 1,1 44,47 Z"
       android:fillColor="#FFFFFF"/>
   
   <!-- Right eye (circle as path) -->
   <path
-      android:pathData="M60,39 A3,3 0 1,1 60,45 A3,3 0 1,1 60,39 Z"
+      android:pathData="M58,47 A2.5,2.5 0 1,1 58,52 A2.5,2.5 0 1,1 58,47 Z"
       android:fillColor="#FFFFFF"/>
   
   <!-- Small mouth -->
   <path
-      android:pathData="M46,48 Q50,50 54,48"
+      android:pathData="M48,55 Q51,57 54,55"
       android:strokeColor="#FFFFFF"
-      android:strokeWidth="2"
+      android:strokeWidth="1.5"
       android:fillColor="@android:color/transparent"/>
 
 </vector>

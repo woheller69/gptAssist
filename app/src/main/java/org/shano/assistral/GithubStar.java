@@ -1,4 +1,4 @@
-package org.shano.mistralassistral;
+package org.shano.assistral;
 
 import android.app.AlertDialog;
 import android.content.Context;

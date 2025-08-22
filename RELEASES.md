@@ -31,12 +31,12 @@ Set up these secrets in your GitHub repository:
 
 ### Generating a Keystore
 ```bash
-keytool -genkey -v -keystore mistralassistral-release-key.keystore -alias mistralassistral -keyalg RSA -keysize 2048 -validity 10000
+keytool -genkey -v -keystore assistral-release-key.keystore -alias assistral -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 ### Converting to Base64 for GitHub Secrets
 ```bash
-base64 mistralassistral-release-key.keystore | tr -d '\n'
+base64 assistral-release-key.keystore | tr -d '\n'
 ```
 
 ## Current Release: v3.0
@@ -44,12 +44,12 @@ base64 mistralassistral-release-key.keystore | tr -d '\n'
 - **Version Code**: 300
 - **Version Name**: 3.0
 - **Release Date**: 2025-01-XX
-- **Key Changes**: Complete migration from gptAssist/ChatGPT to mistralAssistral/Mistral Le Chat
+- **Key Changes**: Complete migration from gptAssist/ChatGPT to Assistral/Mistral Le Chat
 
 ## Release History
 
 ### v3.0 (300) - 2025-01-XX
-- Complete rewrite from gptAssist to mistralAssistral
+- Complete rewrite from gptAssist to Assistral
 - Migrated from ChatGPT to Mistral Le Chat
 - Updated all branding, package names, and metadata
 - First release targeting F-Droid distribution

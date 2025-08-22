@@ -11,7 +11,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-package org.shano.mistralassistral;
+package org.shano.assistral;
 
 import static android.webkit.WebView.HitTestResult.IMAGE_TYPE;
 import static android.webkit.WebView.HitTestResult.SRC_ANCHOR_TYPE;
@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
     private CookieManager chatCookieManager = null;
     private final Context context = this;
     private SwipeTouchListener swipeTouchListener;
-    private String TAG ="mistralAssistral";
+    private String TAG ="assistral";
     private String urlToLoad = "https://chat.mistral.ai/";
     private static boolean restricted = true;
 
@@ -297,7 +297,7 @@ public class MainActivity extends Activity {
 
         //Load Mistral Le Chat
         chatWebView.loadUrl(urlToLoad);
-        if (GithubStar.shouldShowStarDialog(this)) GithubStar.starDialog(this,"https://github.com/shano/mistralAssistral");
+        if (GithubStar.shouldShowStarDialog(this)) GithubStar.starDialog(this,"https://github.com/shano/assistral");
     }
 
     @Override

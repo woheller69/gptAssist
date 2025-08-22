@@ -4,31 +4,31 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
   
-  <!-- Chat bubble -->
+  <!-- Chat bubble with better centering and padding -->
   <path
-      android:pathData="M20,35 Q20,25 30,25 L75,25 Q85,25 85,35 L85,55 Q85,65 75,65 L40,65 L25,75 L20,65 Q20,55 20,55 Z"
+      android:pathData="M30,44 Q30,34 40,34 L68,34 Q78,34 78,44 L78,60 Q78,70 68,70 L45,70 L35,78 L30,70 Q30,60 30,60 Z"
       android:fillColor="#FFD700"/>
   
   <!-- White face area -->
   <path
-      android:pathData="M25,35 Q25,30 30,30 L70,30 Q75,30 75,35 L75,50 Q75,55 70,55 L30,55 Q25,55 25,50 Z"
+      android:pathData="M34,44 Q34,39 39,39 L63,39 Q68,39 68,44 L68,56 Q68,61 63,61 L39,61 Q34,61 34,56 Z"
       android:fillColor="#FFFFFF"/>
   
   <!-- Left eye (circle as path) -->
   <path
-      android:pathData="M40,39 A3,3 0 1,1 40,45 A3,3 0 1,1 40,39 Z"
+      android:pathData="M44,47 A2.5,2.5 0 1,1 44,52 A2.5,2.5 0 1,1 44,47 Z"
       android:fillColor="#000000"/>
   
   <!-- Right eye (circle as path) -->
   <path
-      android:pathData="M60,39 A3,3 0 1,1 60,45 A3,3 0 1,1 60,39 Z"
+      android:pathData="M58,47 A2.5,2.5 0 1,1 58,52 A2.5,2.5 0 1,1 58,47 Z"
       android:fillColor="#000000"/>
   
   <!-- Small mouth -->
   <path
-      android:pathData="M46,48 Q50,50 54,48"
+      android:pathData="M48,55 Q51,57 54,55"
       android:strokeColor="#000000"
-      android:strokeWidth="1.5"
+      android:strokeWidth="1.2"
       android:fillColor="@android:color/transparent"/>
 
 </vector>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">mistralAssistral</string>
+    <string name="app_name" translatable="false">Assistral</string>
     <string name="error_microsoft_google">不支援透過Google、Apple或Microsoft帳號登入</string>
     <string name="error_copy">請手動選取並複製文字</string>
     <!-- StarDialog -->

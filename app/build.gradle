@@ -4,10 +4,10 @@ plugins {
 
 android {
     compileSdk 35
-    namespace 'org.shano.mistralassistral'
+    namespace 'org.shano.assistral'
     android.buildFeatures.buildConfig true
     defaultConfig {
-        applicationId "org.shano.mistralassistral"
+        applicationId "org.shano.assistral"
         minSdk 21
         targetSdk 35
         versionCode 300
@@ -55,7 +55,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
             def versionName = project.ext.versionNameString
-            outputFileName = "mistralAssistral-${variant.name}-${versionName}.apk"
+            outputFileName = "assistral-${variant.name}-${versionName}.apk"
         }
     }
 }

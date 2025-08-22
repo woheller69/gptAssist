@@ -1,6 +1,10 @@
-# mistralAssistral
-
-mistralAssistral is a simple WebView wrapper for Mistral Le Chat. It blocks all URLs which are not essential.
+<div align="center">
+  <img src="app/src/main/ic_launcher-playstore.png" alt="Assistral Logo" width="128" height="128">
+  
+  # Assistral
+  
+  A simple WebView wrapper for Mistral Le Chat that blocks unnecessary URLs for a focused chat experience.
+</div>
 
 ## Features
 
@@ -15,9 +19,9 @@ mistralAssistral is a simple WebView wrapper for Mistral Le Chat. It blocks all 
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
 alt="Get it on F-Droid"
-height="80">](https://f-droid.org/packages/org.shano.mistralassistral/)
+height="80">](https://f-droid.org/packages/org.shano.assistral/)
 
-Or download the latest APK from the [Releases](https://github.com/shano/mistralAssistral/releases) page.
+Or download the latest APK from the [Releases](https://github.com/shano/assistral/releases) page.
 
 ## Usage
 

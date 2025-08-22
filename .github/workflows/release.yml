@@ -132,7 +132,7 @@ jobs:
       - name: Upload Release APK as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mistralAssistral-release-apk
+          name: assistral-release-apk
           path: app/build/outputs/apk/release/
           retention-days: 90
 

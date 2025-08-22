@@ -1,4 +1,4 @@
-mistralAssistral is a simple WebView wrapper for Mistral Le Chat. It blocks all URLs which are not essential for functioning.
+Assistral is a simple WebView wrapper for Mistral Le Chat. It blocks all URLs which are not essential for functioning.
 
 Features:
 • Secure WebView wrapper for Mistral's Le Chat AI assistant

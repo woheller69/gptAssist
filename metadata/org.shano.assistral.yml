@@ -4,15 +4,15 @@ Categories:
 License: GPL-3.0-only
 AuthorName: shano
 AuthorEmail: shane@shanedowling.com
-SourceCode: https://github.com/shano/mistralAssistral
-IssueTracker: https://github.com/shano/mistralAssistral/issues
+SourceCode: https://github.com/shano/assistral
+IssueTracker: https://github.com/shano/assistral/issues
 
-AutoName: mistralAssistral
-Name: mistralAssistral
+AutoName: Assistral
+Name: Assistral
 Summary: WebView wrapper for Mistral Le Chat
 
 Description: |-
-    mistralAssistral is a simple WebView wrapper for Mistral Le Chat. It blocks all URLs which are not essential for functioning.
+    Assistral is a simple WebView wrapper for Mistral Le Chat. It blocks all URLs which are not essential for functioning.
 
     Features:
     * Secure WebView wrapper for Mistral's Le Chat AI assistant
@@ -29,7 +29,7 @@ Description: |-
     This app provides a focused, privacy-conscious way to access Mistral's powerful AI chat interface without the distractions and tracking of a full web browser.
 
 RepoType: git
-Repo: https://github.com/shano/mistralAssistral.git
+Repo: https://github.com/shano/assistral.git
 
 Builds:
   - versionName: '3.0'

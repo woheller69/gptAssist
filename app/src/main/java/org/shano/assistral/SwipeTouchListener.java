@@ -1,4 +1,4 @@
-package org.shano.mistralassistral;
+package org.shano.assistral;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
