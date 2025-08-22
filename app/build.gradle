@@ -12,15 +12,21 @@ android {
         targetSdk 35
         versionCode 300
         versionName project.findProperty("VERSION_NAME") ?: "3.0"
+        
+        // Set arch-specific version code
+        project.ext.versionNameString = project.findProperty("VERSION_NAME") ?: "3.0"
     }
 
     signingConfigs {
         release {
             if (project.hasProperty("MYAPP_RELEASE_STORE_FILE")) {
-                storeFile file(MYAPP_RELEASE_STORE_FILE)
-                storePassword MYAPP_RELEASE_STORE_PASSWORD
-                keyAlias MYAPP_RELEASE_KEY_ALIAS
-                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+                storeFile file(project.property("MYAPP_RELEASE_STORE_FILE"))
+                storePassword project.property("MYAPP_RELEASE_STORE_PASSWORD")
+                keyAlias project.property("MYAPP_RELEASE_KEY_ALIAS")
+                keyPassword project.property("MYAPP_RELEASE_KEY_PASSWORD")
+                println "🔑 Using release signing config with keystore: ${project.property("MYAPP_RELEASE_STORE_FILE")}"
+            } else {
+                println "❌ No signing properties found - APK will be unsigned"
             }
         }
     }
@@ -46,9 +52,9 @@ android {
     }
     
     // F-Droid compatibility - ensure reproducible builds
-    android.applicationVariants.all { variant ->
-        variant.outputs.all {
-            def versionName = project.findProperty("VERSION_NAME") ?: "3.0"
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def versionName = project.ext.versionNameString
             outputFileName = "mistralAssistral-${variant.name}-${versionName}.apk"
         }
     }

@@ -58,7 +58,11 @@ jobs:
           echo "MYAPP_RELEASE_STORE_FILE: $MYAPP_RELEASE_STORE_FILE"
           echo "VERSION_NAME: $VERSION_NAME"
           echo "Building with signing..."
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease -PVERSION_NAME=$VERSION_NAME \
+            -PMYAPP_RELEASE_STORE_FILE=$MYAPP_RELEASE_STORE_FILE \
+            -PMYAPP_RELEASE_STORE_PASSWORD="$MYAPP_RELEASE_STORE_PASSWORD" \
+            -PMYAPP_RELEASE_KEY_ALIAS="$MYAPP_RELEASE_KEY_ALIAS" \
+            -PMYAPP_RELEASE_KEY_PASSWORD="$MYAPP_RELEASE_KEY_PASSWORD"
         env:
           MYAPP_RELEASE_STORE_FILE: ${{ github.workspace }}/app/release.keystore
           MYAPP_RELEASE_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
