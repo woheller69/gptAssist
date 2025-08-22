@@ -10,14 +10,26 @@ android {
         applicationId "org.shano.mistralassistral"
         minSdk 21
         targetSdk 35
-        versionCode 210
-        versionName "2.10"
+        versionCode 300
+        versionName "3.0"
+    }
+
+    signingConfigs {
+        release {
+            if (project.hasProperty("MYAPP_RELEASE_STORE_FILE")) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -25,8 +37,16 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     
-    lintOptions {
+    lint {
         disable "MissingTranslation" // Translation is crowd-sourced, so this lint warning is useless
+        abortOnError false
+    }
+    
+    // F-Droid compatibility - ensure reproducible builds
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "mistralAssistral-${variant.name}-${variant.versionName}.apk"
+        }
     }
 }
 

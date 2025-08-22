@@ -1,0 +1,6 @@
+v3.0 - Complete Rewrite for Mistral Le Chat
+• Migrated from ChatGPT to Mistral Le Chat
+• Updated all branding and package names  
+• Configured allowed domains for Mistral services
+• Updated build configuration for modern Android
+• First release of mistralAssistral

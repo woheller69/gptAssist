@@ -1,0 +1,45 @@
+Categories:
+  - Internet
+  - Development
+License: GPL-3.0-only
+AuthorName: shano
+AuthorEmail: shane@shanedowling.com
+SourceCode: https://github.com/shano/mistralAssistral
+IssueTracker: https://github.com/shano/mistralAssistral/issues
+
+AutoName: mistralAssistral
+Name: mistralAssistral
+Summary: WebView wrapper for Mistral Le Chat
+
+Description: |-
+    mistralAssistral is a simple WebView wrapper for Mistral Le Chat. It blocks all URLs which are not essential for functioning.
+
+    Features:
+    * Secure WebView wrapper for Mistral's Le Chat AI assistant
+    * URL blocking to prevent tracking and unnecessary requests
+    * Toggle button to switch between restricted and unrestricted mode
+    * Support for file uploads and downloads
+    * Voice input support for conversations
+    * Clean, minimal interface focused on the chat experience
+
+    The app does not support login via Apple, Microsoft, or Google account - please use a web browser for initial sign up if needed.
+
+    You can switch URL blocking on/off by clicking the button at the top right. Swipe up a bit to hide the button for a cleaner view.
+
+    This app provides a focused, privacy-conscious way to access Mistral's powerful AI chat interface without the distractions and tracking of a full web browser.
+
+RepoType: git
+Repo: https://github.com/shano/mistralAssistral.git
+
+Builds:
+  - versionName: '3.0'
+    versionCode: 300
+    commit: v3.0
+    subdir: app
+    gradle:
+      - yes
+
+AutoUpdateMode: Version v%v
+UpdateCheckMode: Tags
+CurrentVersion: '3.0'
+CurrentVersionCode: 300
