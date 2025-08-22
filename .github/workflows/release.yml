@@ -26,7 +26,16 @@ jobs:
 
       - name: Setup signing keystore
         run: |
-          echo "$KEYSTORE_BASE64" | base64 -d > app/release.keystore
+          # Create keystore from base64 - try different base64 implementations
+          if command -v base64 >/dev/null 2>&1; then
+            echo "$KEYSTORE_BASE64" | base64 -d > app/release.keystore || \
+            echo "$KEYSTORE_BASE64" | base64 --decode > app/release.keystore
+          else
+            echo "base64 command not found"
+            exit 1
+          fi
+          # Verify keystore was created
+          ls -la app/release.keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
 
