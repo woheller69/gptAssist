@@ -1,4 +1,4 @@
-package org.woheller69.gptassist;
+package org.shano.mistralassistral;
 
 import android.app.AlertDialog;
 import android.content.Context;

@@ -1,1 +1,1 @@
-WebView wrapper for ChatGPT
+WebView wrapper for Mistral Le Chat

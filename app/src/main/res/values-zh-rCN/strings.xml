@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">gptAssist</string>
+    <string name="app_name" translatable="false">mistralAssistral</string>
     <string name="error_microsoft_google">不支持通过谷歌、苹果或微软账户登录</string>
     <string name="error_copy">请手动选择并复制文本</string>
     <!-- StarDialog -->

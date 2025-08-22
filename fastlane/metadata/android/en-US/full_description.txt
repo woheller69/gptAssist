@@ -1,4 +1,4 @@
-gptAssist is a simple WebView wrapper for ChatGPT. It blocks all URLs that are not essential for functioning.
+mistralAssistral is a simple WebView wrapper for Mistral Le Chat. It blocks all URLs that are not essential for functioning.
 It does not support login via Apple, Microsoft, or Google account.
 Please use a web browser for initial sign up.
 

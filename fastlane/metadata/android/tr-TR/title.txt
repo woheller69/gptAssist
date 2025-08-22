@@ -1,1 +1,1 @@
-gptAssist
+mistralAssistral

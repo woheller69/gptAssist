@@ -11,7 +11,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-package org.woheller69.gptassist;
+package org.shano.mistralassistral;
 
 import static android.webkit.WebView.HitTestResult.IMAGE_TYPE;
 import static android.webkit.WebView.HitTestResult.SRC_ANCHOR_TYPE;
@@ -65,8 +65,8 @@ public class MainActivity extends Activity {
     private CookieManager chatCookieManager = null;
     private final Context context = this;
     private SwipeTouchListener swipeTouchListener;
-    private String TAG ="gptAssist";
-    private String urlToLoad = "https://chatgpt.com/";
+    private String TAG ="mistralAssistral";
+    private String urlToLoad = "https://chat.mistral.ai/";
     private static boolean restricted = true;
 
     private static final ArrayList<String> allowedDomains = new ArrayList<String>();
@@ -295,9 +295,9 @@ public class MainActivity extends Activity {
         chatWebSettings.setSaveFormData(false);
         chatWebSettings.setGeolocationEnabled(false);
 
-        //Load ChatGPT
+        //Load Mistral Le Chat
         chatWebView.loadUrl(urlToLoad);
-        if (GithubStar.shouldShowStarDialog(this)) GithubStar.starDialog(this,"https://github.com/woheller69/gptassist");
+        if (GithubStar.shouldShowStarDialog(this)) GithubStar.starDialog(this,"https://github.com/shano/mistralAssistral");
     }
 
     @Override
@@ -341,12 +341,11 @@ public class MainActivity extends Activity {
     private static void initURLs() {
         //Allowed Domains
         allowedDomains.add("cdn.auth0.com");
-        allowedDomains.add("auth.openai.com");
-        allowedDomains.add("chatgpt.com");
-        allowedDomains.add("openai.com");
-        allowedDomains.add("fileserviceuploadsperm.blob.core.windows.net");
-        allowedDomains.add("cdn.oaistatic.com");
-        allowedDomains.add("oaiusercontent.com");
+        allowedDomains.add("chat.mistral.ai");
+        allowedDomains.add("mistral.ai");
+        allowedDomains.add("api.mistral.ai");
+        allowedDomains.add("console.mistral.ai");
+        allowedDomains.add("mistralcdn.net");
 
     }
 

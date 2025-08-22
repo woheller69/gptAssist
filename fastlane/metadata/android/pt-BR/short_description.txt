@@ -1,1 +1,1 @@
-Embrulho WebView do ChatGPT
+Embrulho WebView do Mistral Le Chat
