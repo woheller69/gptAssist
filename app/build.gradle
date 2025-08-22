@@ -11,7 +11,7 @@ android {
         minSdk 21
         targetSdk 35
         versionCode 300
-        versionName "3.0"
+        versionName project.findProperty("VERSION_NAME") ?: "3.0"
     }
 
     signingConfigs {

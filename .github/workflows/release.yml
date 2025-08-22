@@ -39,6 +39,18 @@ jobs:
         env:
           KEYSTORE_BASE64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
 
+      - name: Extract version from tag
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+            echo "VERSION_NAME=$VERSION" >> $GITHUB_OUTPUT
+            echo "Building version: $VERSION"
+          else
+            echo "VERSION_NAME=3.0" >> $GITHUB_OUTPUT
+            echo "Not a tag build, using default version"
+          fi
+
       - name: Build Release APK
         run: ./gradlew assembleRelease
         env:
@@ -46,6 +58,7 @@ jobs:
           MYAPP_RELEASE_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           MYAPP_RELEASE_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           MYAPP_RELEASE_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          VERSION_NAME: ${{ steps.version.outputs.VERSION_NAME }}
 
       - name: List build outputs and analyze APK
         run: |
