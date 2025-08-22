@@ -24,42 +24,102 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Setup signing keystore
+        run: |
+          echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 -d > app/release.keystore
+
       - name: Build Release APK
         run: ./gradlew assembleRelease
+        env:
+          MYAPP_RELEASE_STORE_FILE: ${{ github.workspace }}/app/release.keystore
+          MYAPP_RELEASE_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          MYAPP_RELEASE_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          MYAPP_RELEASE_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
 
-      - name: Upload Release APK
+      - name: List build outputs and analyze APK
+        run: |
+          echo "=== Build outputs ==="
+          find app/build/outputs -name "*.apk" -type f -exec ls -lh {} \;
+          echo "====================="
+          
+          echo "=== APK Analysis ==="
+          APK_FILE=$(find app/build/outputs/apk/release -name "*.apk" -type f | head -1)
+          if [ -f "$APK_FILE" ]; then
+            echo "APK File: $APK_FILE"
+            echo "APK Size: $(du -h "$APK_FILE" | cut -f1)"
+            echo "APK Details:"
+            ls -la "$APK_FILE"
+            
+            # Install aapt if available for APK inspection
+            if command -v aapt &> /dev/null; then
+              echo "=== APK Contents ==="
+              aapt dump badging "$APK_FILE" | head -20
+              echo "=== APK Resources ==="
+              aapt list "$APK_FILE" | head -20
+            fi
+            
+            # Alternative APK inspection using unzip
+            echo "=== APK Structure (via unzip) ==="
+            unzip -l "$APK_FILE" | head -30
+            
+            echo "=== APK Verification ==="
+            # Check if APK has essential components
+            if unzip -l "$APK_FILE" | grep -q "classes.dex"; then
+              echo "✓ Contains classes.dex"
+            else
+              echo "✗ Missing classes.dex - THIS IS A PROBLEM"
+            fi
+            
+            if unzip -l "$APK_FILE" | grep -q "AndroidManifest.xml"; then
+              echo "✓ Contains AndroidManifest.xml"
+            else
+              echo "✗ Missing AndroidManifest.xml - THIS IS A PROBLEM"
+            fi
+            
+            if unzip -l "$APK_FILE" | grep -q "resources.arsc"; then
+              echo "✓ Contains resources.arsc"
+            else
+              echo "✗ Missing resources.arsc - THIS IS A PROBLEM"
+            fi
+            
+            # Check for icon files
+            if unzip -l "$APK_FILE" | grep -q "ic_launcher"; then
+              echo "✓ Contains icon files"
+              unzip -l "$APK_FILE" | grep "ic_launcher"
+            else
+              echo "✗ Missing icon files"
+            fi
+            
+          else
+            echo "ERROR: No APK file found!"
+          fi
+          echo "====================="
+
+      - name: Upload Release APK as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mistralAssistral-release
-          path: app/build/outputs/apk/release/*.apk
+          name: mistralAssistral-release-apk
+          path: app/build/outputs/apk/release/
+          retention-days: 90
 
-      - name: Create Release
-        uses: actions/create-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-
-      - name: Find APK file
-        if: startsWith(github.ref, 'refs/tags/')
-        id: find_apk
+      - name: Get APK info
+        id: apk_info
         run: |
           APK_FILE=$(find app/build/outputs/apk/release -name "*.apk" -type f | head -1)
           echo "apk_path=$APK_FILE" >> $GITHUB_OUTPUT
           echo "apk_name=$(basename $APK_FILE)" >> $GITHUB_OUTPUT
+          echo "Found APK: $APK_FILE"
 
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+      - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ steps.apk_info.outputs.apk_path }}
+          name: Release ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.find_apk.outputs.apk_path }}
-          asset_name: ${{ steps.find_apk.outputs.apk_name }}
-          asset_content_type: application/vnd.android.package-archive
