@@ -11,16 +11,14 @@
       android:strokeWidth="3"
       android:fillColor="@android:color/transparent"/>
   
-  <!-- Eyes -->
-  <circle
-      android:cx="40"
-      android:cy="42"
-      android:r="3"
+  <!-- Left eye (circle as path) -->
+  <path
+      android:pathData="M40,39 A3,3 0 1,1 40,45 A3,3 0 1,1 40,39 Z"
       android:fillColor="#FFFFFF"/>
-  <circle
-      android:cx="60"
-      android:cy="42"
-      android:r="3"
+  
+  <!-- Right eye (circle as path) -->
+  <path
+      android:pathData="M60,39 A3,3 0 1,1 60,45 A3,3 0 1,1 60,39 Z"
       android:fillColor="#FFFFFF"/>
   
   <!-- Small mouth -->

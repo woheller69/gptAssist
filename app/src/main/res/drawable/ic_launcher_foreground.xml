@@ -14,16 +14,14 @@
       android:pathData="M25,35 Q25,30 30,30 L70,30 Q75,30 75,35 L75,50 Q75,55 70,55 L30,55 Q25,55 25,50 Z"
       android:fillColor="#FFFFFF"/>
   
-  <!-- Eyes -->
-  <circle
-      android:cx="40"
-      android:cy="42"
-      android:r="3"
+  <!-- Left eye (circle as path) -->
+  <path
+      android:pathData="M40,39 A3,3 0 1,1 40,45 A3,3 0 1,1 40,39 Z"
       android:fillColor="#000000"/>
-  <circle
-      android:cx="60"
-      android:cy="42"
-      android:r="3"
+  
+  <!-- Right eye (circle as path) -->
+  <path
+      android:pathData="M60,39 A3,3 0 1,1 60,45 A3,3 0 1,1 60,39 Z"
       android:fillColor="#000000"/>
   
   <!-- Small mouth -->
