@@ -29,6 +29,13 @@ gptAssist is a simple WebView wrapper for ChatGPT. It blocks all URLs which are 
 It does not support login via Apple, Microsoft or Google account.
 Please use a web browser for initial sign up.
 
+- 🔒 **Privacy-focused**: Blocks unnecessary URLs and tracking
+- 🎯 **Focused interface**: Clean chat experience without browser distractions  
+- 🔄 **Toggle blocking**: Switch between restricted and unrestricted modes
+- 📁 **File support**: Upload files for analysis and conversation
+- 🎤 **Voice input**: Support for voice conversations
+- 📱 **Lightweight**: Minimal app focused on core functionality
+
 You can switch on/off blocking by clicking the button at the top right.
 Swipe up a bit to hide the button.
 
