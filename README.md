@@ -36,6 +36,7 @@ Swipe up a bit to hide the button for a cleaner view.
 This app is licensed under the GPLv3.
 
 The app uses:
+- Code from gptAssist (https://github.com/woheller69/gptAssist) which is licensed under the GPLv3
 - Parts from GMaps WV (https://gitlab.com/divested-mobile/maps) which is licensed under the GPLv3
 
 ## Contributing
