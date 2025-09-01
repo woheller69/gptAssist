@@ -10,8 +10,8 @@ android {
         applicationId "org.woheller69.gptassist"
         minSdk 21
         targetSdk 35
-        versionCode 210
-        versionName "2.10"
+        versionCode 220
+        versionName "2.20"
     }
 
     buildTypes {
@@ -31,5 +31,6 @@ android {
 }
 
 dependencies {
-   implementation 'androidx.webkit:webkit:1.12.1'
+    implementation 'androidx.webkit:webkit:1.12.1'
+    implementation 'com.github.woheller69:FreeDroidWarn:V1.3'
 }

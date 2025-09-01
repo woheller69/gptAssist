@@ -53,6 +53,9 @@ import android.webkit.ValueCallback;
 import android.net.Uri;
 
 import androidx.webkit.URLUtilCompat;
+
+import org.woheller69.freeDroidWarn.FreeDroidWarn;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -297,6 +300,7 @@ public class MainActivity extends Activity {
 
         //Load ChatGPT
         chatWebView.loadUrl(urlToLoad);
+        FreeDroidWarn.showWarningOnUpgrade(this, BuildConfig.VERSION_CODE);
         if (GithubStar.shouldShowStarDialog(this)) GithubStar.starDialog(this,"https://github.com/woheller69/gptassist");
     }
 
