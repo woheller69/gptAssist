@@ -69,6 +69,31 @@ public class MainActivity extends Activity {
     private final Context context = this;
     private SwipeTouchListener swipeTouchListener;
     private String TAG ="gptAssist";
+
+    // Issue #89: cosmetic filter for inline sponsored content on
+    // chatgpt.com. Selectors are intentionally narrow and live in
+    // one place so they can be revised when ChatGPT changes its
+    // markup. The MutationObserver covers content streamed into the
+    // chat after the initial paint.
+    private static final String COSMETIC_FILTER_JS =
+            "(function(){" +
+            "  var SELECTORS = [" +
+            "    '[data-testid*=\"sponsor\" i]'," +
+            "    '[aria-label*=\"sponsor\" i]'," +
+            "    '[data-message-sponsored=\"true\"]'," +
+            "    'a[href*=\"utm_source=chatgpt\"][data-sponsored]'" +
+            "  ];" +
+            "  function hideAll(){" +
+            "    for (var i=0;i<SELECTORS.length;i++){" +
+            "      var nodes = document.querySelectorAll(SELECTORS[i]);" +
+            "      for (var j=0;j<nodes.length;j++){ nodes[j].style.setProperty('display','none','important'); }" +
+            "    }" +
+            "  }" +
+            "  hideAll();" +
+            "  if (window.__gptAssistAdObserver) return;" +
+            "  window.__gptAssistAdObserver = new MutationObserver(hideAll);" +
+            "  window.__gptAssistAdObserver.observe(document.documentElement, {childList:true, subtree:true});" +
+            "})();";
     private String urlToLoad = "https://chatgpt.com/";
     private static boolean restricted = true;
 
@@ -268,6 +293,21 @@ public class MainActivity extends Activity {
                     return true; //Deny URLs not on ALLOWLIST
                 }
                 return false;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                // Issue #89: ChatGPT serves sponsored entries inline from
+                // its own domain so the URL allowlist cannot reach them.
+                // Inject a small cosmetic filter that hides nodes carrying
+                // the sponsored markers ChatGPT emits, and re runs on
+                // dynamically streamed DOM via a MutationObserver.
+                if (url == null || url.equals("about:blank")) return;
+                if (!url.startsWith("https://chatgpt.com") && !url.startsWith("https://chat.openai.com")) {
+                    return;
+                }
+                view.evaluateJavascript(COSMETIC_FILTER_JS, null);
             }
         });
 
