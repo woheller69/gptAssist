@@ -41,6 +41,7 @@ import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -269,6 +270,13 @@ public class MainActivity extends Activity {
                 }
                 return false;
             }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                if (request != null && request.isForMainFrame()) {
+                    Log.w(TAG, "[onReceivedError] " + error.getErrorCode() + ": " + error.getDescription() + " @ " + request.getUrl());
+                }
+            }
         });
 
         chatWebView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
@@ -334,6 +342,7 @@ public class MainActivity extends Activity {
 
     public void resetChat()  {
 
+        chatWebView.clearCache(true);
         chatWebView.clearFormData();
         chatWebView.clearHistory();
         chatWebView.clearMatches();
