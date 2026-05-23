@@ -78,6 +78,11 @@ public class MainActivity extends Activity {
     private ValueCallback<Uri[]> mUploadMessage;
     private final static int FILE_CHOOSER_REQUEST_CODE = 1;
 
+    // Issue #63: remember the pending WebView permission request so the
+    // RECORD_AUDIO grant can be forwarded to the WebView once the user
+    // answers the OS permission dialog.
+    private android.webkit.PermissionRequest pendingAudioPermissionRequest;
+
     @Override
     protected void onPause() {
         if (chatCookieManager!=null) chatCookieManager.flush();
@@ -179,21 +184,33 @@ public class MainActivity extends Activity {
 
             @Override
             public void onPermissionRequest(final android.webkit.PermissionRequest request) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (request.getResources().length > 0 && request.getResources()[0].equals(android.webkit.PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
-                        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                            request.grant(request.getResources());
-                        } else {
-                            // Request the permission from the user
-                            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 123);
-                            // A more robust solution would involve storing 'request' and calling request.grant() in onRequestPermissionsResult.
-                        }
-                    } else {
-                        request.deny();
-                    }
-                } else {
-                    request.grant(request.getResources()); // For older Android versions, permissions are granted at install time
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    request.grant(request.getResources()); // pre-M permissions granted at install time
+                    return;
                 }
+                // Issue #63: scan the entire resource array for audio
+                // capture instead of only checking index 0. Some WebView
+                // builds (Huawei WebView for example) include extra
+                // resources or order them differently.
+                boolean wantsAudio = false;
+                for (String r : request.getResources()) {
+                    if (android.webkit.PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(r)) {
+                        wantsAudio = true;
+                        break;
+                    }
+                }
+                if (!wantsAudio) {
+                    request.deny();
+                    return;
+                }
+                if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                    request.grant(new String[]{android.webkit.PermissionRequest.RESOURCE_AUDIO_CAPTURE});
+                    return;
+                }
+                // Cache the request so we can grant it after the OS
+                // dialog returns, then ask for RECORD_AUDIO.
+                pendingAudioPermissionRequest = request;
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 123);
             }
 
         });  //needed to share link
@@ -463,10 +480,23 @@ public class MainActivity extends Activity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 123) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            if (granted) {
                 Toast.makeText(context, "Microphone permission granted.", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, "Microphone permission denied.", Toast.LENGTH_SHORT).show();
+            }
+            // Issue #63: forward the result to the WebView request
+            // that triggered this OS prompt, otherwise voice input
+            // would stay broken even after the user grants the mic.
+            if (pendingAudioPermissionRequest != null) {
+                if (granted) {
+                    pendingAudioPermissionRequest.grant(
+                            new String[]{android.webkit.PermissionRequest.RESOURCE_AUDIO_CAPTURE});
+                } else {
+                    pendingAudioPermissionRequest.deny();
+                }
+                pendingAudioPermissionRequest = null;
             }
         }
         // Handle other permission requests if any (like FILE_CHOOSER_REQUEST_CODE)
