@@ -78,6 +78,28 @@ public class MainActivity extends Activity {
     private ValueCallback<Uri[]> mUploadMessage;
     private final static int FILE_CHOOSER_REQUEST_CODE = 1;
 
+    // block ads
+    private String getAdBlockScript() {
+        return "(function() {" +
+            "  function removeAds() {" +
+            "    document.querySelectorAll('div.border-token-border-default.mt-2.border-t.py-4.text-sm')" +
+            "      .forEach(function(el) {" +
+            // double check
+            "        if (el.textContent.includes('Sponsored')) {" +
+            "          el.remove();" +
+            "        }" +
+            "      });" +
+            "  }" +
+            "  removeAds();" +
+            "  if (!window._adBlockObserverActive) {" +
+            "    window._adBlockObserverActive = true;" +
+            "    new MutationObserver(function() { removeAds(); })" +
+            "      .observe(document.body, { childList: true, subtree: true });" +
+            "  }" +
+            "})();";
+    }
+
+    
     @Override
     protected void onPause() {
         if (chatCookieManager!=null) chatCookieManager.flush();
@@ -199,6 +221,13 @@ public class MainActivity extends Activity {
         });  //needed to share link
 
         chatWebView.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                view.evaluateJavascript(getAdBlockScript(), null);
+            }
+            
             //Keep these in sync!
             @Override
             public WebResourceResponse shouldInterceptRequest(final WebView view, WebResourceRequest request) {
