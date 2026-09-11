@@ -11,4 +11,5 @@
     <string name="all_urls">All URLs allowed</string>
     <string name="urls_restricted">URLs restricted</string>
     <string name="url_copied">URL copied</string>
+    <string name="gptassist_download_blocked">Download blocked: an HTTPS URL permitted by the current download rules is required.</string>
 </resources>

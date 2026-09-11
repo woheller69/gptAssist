@@ -59,7 +59,6 @@ import org.woheller69.freeDroidWarn.FreeDroidWarn;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
@@ -71,9 +70,7 @@ public class MainActivity extends Activity {
     private SwipeTouchListener swipeTouchListener;
     private String TAG ="gptAssist";
     private String urlToLoad = "https://chatgpt.com/";
-    private static boolean restricted = true;
-
-    private static final ArrayList<String> allowedDomains = new ArrayList<String>();
+    private static volatile boolean restricted = true;
 
     private ValueCallback<Uri[]> mUploadMessage;
     private final static int FILE_CHOOSER_REQUEST_CODE = 1;
@@ -142,8 +139,6 @@ public class MainActivity extends Activity {
         chatCookieManager.setAcceptCookie(true);
         chatCookieManager.setAcceptThirdPartyCookies(chatWebView, false);
 
-        //Restrict what gets loaded
-        initURLs();
         registerForContextMenu(chatWebView);
 
         chatWebView.setWebChromeClient(new WebChromeClient(){
@@ -207,20 +202,15 @@ public class MainActivity extends Activity {
                 if (request.getUrl().toString().equals("about:blank")) {
                     return null;
                 }
-                if (!request.getUrl().toString().startsWith("https://")) {
+                if (!"https".equalsIgnoreCase(request.getUrl().getScheme())) {
                     Log.d(TAG, "[shouldInterceptRequest][NON-HTTPS] Blocked access to " + request.getUrl().toString());
                     return new WebResourceResponse("text/javascript", "UTF-8", null); //Deny URLs that aren't HTTPS
                 }
-                boolean allowed = false;
-                for (String url : allowedDomains) {
-                    if (request.getUrl().getHost().endsWith(url)) {
-                        allowed = true;
-                    }
-                }
+                boolean allowed = DomainPolicy.isAllowedHttpsUrl(request.getUrl().toString());
                 if (!allowed) {
                     Log.d(TAG, "[shouldInterceptRequest][NOT ON ALLOWLIST] Blocked access to " + request.getUrl().getHost());
-                    if (request.getUrl().getHost().equals("login.microsoftonline.com") || request.getUrl().getHost().equals("accounts.google.com") || request.getUrl().getHost().equals("appleid.apple.com")){
-                        // ✅ Post ALL UI/WebView operations to main thread
+                    if ("login.microsoftonline.com".equals(request.getUrl().getHost()) || "accounts.google.com".equals(request.getUrl().getHost()) || "appleid.apple.com".equals(request.getUrl().getHost())){
+                        // Post all UI/WebView operations to the main thread
                         view.post(() -> {
                             Toast.makeText(context, context.getString(R.string.error_microsoft_google), Toast.LENGTH_LONG).show();
                             resetChat(); // Now safe: runs on UI thread where WebView was created
@@ -242,33 +232,31 @@ public class MainActivity extends Activity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                if (!restricted) return false;
+                String url = request.getUrl().toString();
 
-                if (request.getUrl().toString().equals("about:blank")) {
+                if (!restricted || DomainPolicy.isAllowedNavigationUrl(url)) {
                     return false;
                 }
-                if (!request.getUrl().toString().startsWith("https://")) {
-                    Log.d(TAG, "[shouldOverrideUrlLoading][NON-HTTPS] Blocked access to " + request.getUrl().toString());
-                    return true; //Deny URLs that aren't HTTPS
+
+                Log.d(TAG, "[shouldOverrideUrlLoading] Blocked URL by restricted-mode policy. URL: " + equest.getUrl().toString());
+
+                String host = request.getUrl().getHost();
+                if ("login.microsoftonline.com".equals(host)
+                        || "accounts.google.com".equals(host)
+                        || "appleid.apple.com".equals(host)) {
+                    // Post all UI/WebView operations to the main thread        
+                    view.post(() -> {
+                        Toast.makeText(
+                                context,
+                                context.getString(R.string.error_microsoft_google),
+                                Toast.LENGTH_LONG
+                        ).show();
+                        // Now safe: runs on UI thread where WebView was created
+                        resetChat();
+                    });
                 }
-                boolean allowed = false;
-                for (String url : allowedDomains) {
-                    if (request.getUrl().getHost().endsWith(url)) {
-                        allowed = true;
-                    }
-                }
-                if (!allowed) {
-                    Log.d(TAG, "[shouldOverrideUrlLoading][NOT ON ALLOWLIST] Blocked access to " + request.getUrl().getHost());
-                    if (request.getUrl().getHost().equals("login.microsoftonline.com") || request.getUrl().getHost().equals("accounts.google.com") || request.getUrl().getHost().equals("appleid.apple.com")){
-                        // ✅ Post ALL UI/WebView operations to main thread
-                        view.post(() -> {
-                            Toast.makeText(context, context.getString(R.string.error_microsoft_google), Toast.LENGTH_LONG).show();
-                            resetChat(); // Now safe: runs on UI thread where WebView was created
-                        });
-                    }
-                    return true; //Deny URLs not on ALLOWLIST
-                }
-                return false;
+
+                return true;
             }
 
             @Override
@@ -280,10 +268,16 @@ public class MainActivity extends Activity {
         });
 
         chatWebView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
-            Uri source = Uri.parse(url);
+            if (!canStartDownload(url)) return;
+
+            // Normalize only the scheme, and only after validation.
+            Uri source = Uri.parse(url).normalizeScheme();
             Log.d(TAG,"DownloadManager: " + url);
             DownloadManager.Request request = new DownloadManager.Request(source);
-            request.addRequestHeader("Cookie", CookieManager.getInstance().getCookie(url));
+            String cookie = CookieManager.getInstance().getCookie(source.toString());
+            if (cookie != null && !cookie.isEmpty()) {
+                request.addRequestHeader("Cookie", cookie);
+            }
             request.addRequestHeader("Accept", "text/html, application/xhtml+xml, *" + "/" + "*");
             request.addRequestHeader("Accept-Language", "en-US,en;q=0.7,he;q=0.3");
             request.addRequestHeader("Referer", url);
@@ -316,6 +310,15 @@ public class MainActivity extends Activity {
         chatWebView.loadUrl(urlToLoad);
         FreeDroidWarn.showWarningOnUpgrade(this, BuildConfig.VERSION_CODE);
         if (GithubStar.shouldShowStarDialog(this)) GithubStar.starDialog(this,"https://github.com/woheller69/gptassist");
+    }
+
+    private boolean canStartDownload(String url) {
+        // Initial URL only: DownloadManager handles redirects independently.
+        if (DomainPolicy.isAllowedDownloadUrl(url, restricted)) return true;
+
+        Toast.makeText(this, R.string.gptassist_download_blocked,
+                Toast.LENGTH_SHORT).show();
+        return false;
     }
 
     @Override
@@ -357,18 +360,6 @@ public class MainActivity extends Activity {
 
     }
 
-    private static void initURLs() {
-        //Allowed Domains
-        allowedDomains.add("cdn.auth0.com");
-        allowedDomains.add("auth.openai.com");
-        allowedDomains.add("chatgpt.com");
-        allowedDomains.add("openai.com");
-        allowedDomains.add("fileserviceuploadsperm.blob.core.windows.net");
-        allowedDomains.add("cdn.oaistatic.com");
-        allowedDomains.add("oaiusercontent.com");
-
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -396,9 +387,15 @@ public class MainActivity extends Activity {
         if (result.getExtra() != null) {
             if (result.getType() == IMAGE_TYPE) {
                 url = result.getExtra();
-                Uri source = Uri.parse(url);
+                if (!canStartDownload(url)) return;
+
+                // Same admission check as the normal download listener.
+                Uri source = Uri.parse(url).normalizeScheme();
                 DownloadManager.Request request = new DownloadManager.Request(source);
-                request.addRequestHeader("Cookie", CookieManager.getInstance().getCookie(url));
+                String cookie = CookieManager.getInstance().getCookie(source.toString());
+                if (cookie != null && !cookie.isEmpty()) {
+                    request.addRequestHeader("Cookie", cookie);
+                }
                 request.addRequestHeader("Accept", "text/html, application/xhtml+xml, *" + "/" + "*");
                 request.addRequestHeader("Accept-Language", "en-US,en;q=0.7,he;q=0.3");
                 request.addRequestHeader("Referer", url);
@@ -424,15 +421,9 @@ public class MainActivity extends Activity {
                     url = result.getExtra();
                     Toast.makeText(this, "SRC_ANCHOR: " + url, Toast.LENGTH_SHORT).show();
                 }
-                String host = Uri.parse(url).getHost();
+                String host = url == null ? null : Uri.parse(url).getHost();
                 if (host != null) {
-                    boolean allowed = false;
-                    for (String domain : allowedDomains) {
-                        if (host.endsWith(domain)) {
-                            allowed = true;
-                            break;
-                        }
-                    }
+                    boolean allowed = DomainPolicy.isAllowedHttpsUrl(url);
                     if (!allowed) {  //Copy URLs that are not allowed to open to clipboard
                         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                         ClipData clip = ClipData.newPlainText(getString(R.string.app_name), url);
