@@ -238,7 +238,7 @@ public class MainActivity extends Activity {
                     return false;
                 }
 
-                Log.d(TAG, "[shouldOverrideUrlLoading] Blocked URL by restricted-mode policy. URL: " + equest.getUrl().toString());
+                Log.d(TAG, "[shouldOverrideUrlLoading] Blocked URL by restricted-mode policy. URL: " + request.getUrl().toString());
 
                 String host = request.getUrl().getHost();
                 if ("login.microsoftonline.com".equals(host)
