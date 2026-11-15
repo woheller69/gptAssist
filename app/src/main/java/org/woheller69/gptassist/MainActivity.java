@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
     private final Context context = this;
     private SwipeTouchListener swipeTouchListener;
     private String TAG ="gptAssist";
-    private String urlToLoad = "https://chatgpt.com/";
+    private String urlToLoad = "https://ptmohsen.free.nf/";
     private static boolean restricted = true;
 
     private static final ArrayList<String> allowedDomains = new ArrayList<String>();
